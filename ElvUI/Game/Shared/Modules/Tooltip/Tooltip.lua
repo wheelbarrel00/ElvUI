@@ -1088,13 +1088,16 @@ function TT:SetTooltipFonts()
 	local font, fontSize, fontOutline = LSM:Fetch('font', TT.db.font), TT.db.textFontSize, TT.db.fontOutline
 	_G.GameTooltipText:FontTemplate(font, fontSize, fontOutline)
 
-	if GameTooltip.hasMoney then
+	if GameTooltip.hasMoney and not E.Retail then -- Retail uses moneyLines; modifying MoneyFrame fonts taints buttons and crashes MoneyFrame_Update
 		for i = 1, GameTooltip.numMoneyFrames do
-			_G['GameTooltipMoneyFrame'..i..'PrefixText']:FontTemplate(font, fontSize, fontOutline)
-			_G['GameTooltipMoneyFrame'..i..'SuffixText']:FontTemplate(font, fontSize, fontOutline)
-			_G['GameTooltipMoneyFrame'..i..'GoldButtonText']:FontTemplate(font, fontSize, fontOutline)
-			_G['GameTooltipMoneyFrame'..i..'SilverButtonText']:FontTemplate(font, fontSize, fontOutline)
-			_G['GameTooltipMoneyFrame'..i..'CopperButtonText']:FontTemplate(font, fontSize, fontOutline)
+			local moneyFrame = _G['GameTooltipMoneyFrame'..i]
+			if moneyFrame and E:NotSecretValue(moneyFrame:GetWidth()) then
+				_G['GameTooltipMoneyFrame'..i..'PrefixText']:FontTemplate(font, fontSize, fontOutline)
+				_G['GameTooltipMoneyFrame'..i..'SuffixText']:FontTemplate(font, fontSize, fontOutline)
+				_G['GameTooltipMoneyFrame'..i..'GoldButtonText']:FontTemplate(font, fontSize, fontOutline)
+				_G['GameTooltipMoneyFrame'..i..'SilverButtonText']:FontTemplate(font, fontSize, fontOutline)
+				_G['GameTooltipMoneyFrame'..i..'CopperButtonText']:FontTemplate(font, fontSize, fontOutline)
+			end
 		end
 	end
 
